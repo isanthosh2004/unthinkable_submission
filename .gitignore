@@ -1,0 +1,25 @@
+# Ignore environment and secrets
+.env
+*.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite databases
+db/*.db
+
+# PDF Reports
+reports/*.pdf
+
+# Streamlit cache
+.streamlit/
+
+# IDE / editor configs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
