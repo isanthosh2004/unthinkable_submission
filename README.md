@@ -1,15 +1,33 @@
 
 
-# 🔍 Code Review Assistant
+# # 🔍 Code Review Assistant
 
 An AI-powered **Code Review Web Application** that analyzes uploaded source code using **Large Language Models (LLMs)** via the **OpenRouter API**, generates detailed feedback, and provides downloadable PDF reports.  
 The system also supports multi-user authentication, report history tracking, and an admin dashboard.
 
+---
+
 🌐 **Live App:** [https://unthinkable-santhosh22bce3084.streamlit.app/](https://unthinkable-santhosh22bce3084.streamlit.app/)  
-📦 **Repository:** [https://github.com/isanthosh2004/unthinkable_submission](https://github.com/isanthosh2004/unthinkable_submission)
-**DEMO VIDEO** https://drive.google.com/file/d/16rE-IeC6FqorXCXd6Yesl_tUlO-rmYbj/view?usp=sharing
+📦 **Repository:** [https://github.com/isanthosh2004/unthinkable_submission](https://github.com/isanthosh2004/unthinkable_submission)  
+🎥 **Demo Video:** [Watch on Google Drive](https://drive.google.com/file/d/16rE-IeC6FqorXCXd6Yesl_tUlO-rmYbj/view?usp=sharing)
 
 ---
+
+## ✨ Features
+
+- 🧠 **AI-Powered Code Reviews** — Uses Qwen 2.5 Coder model via OpenRouter API  
+- 📂 **Multi-File Uploads** — Supports major programming languages (Python, C++, Java, etc.)  
+- 📊 **Complexity Graphs** — Visual time and space complexity using `matplotlib`  
+- 🧾 **PDF Report Generation** — Generates professional reports with graphs and metadata  
+- 🗄️ **SQLite Database** — Stores all reviews, files, and metadata  
+- 🔐 **Role-Based Access** — Admin can view all reports; users can view only their own  
+- 🧭 **Dashboard Interface** — Intuitive Streamlit UI for uploads, reports, and search  
+- ☁️ **Streamlit Cloud Deployment** — Fully hosted, with secure API key management  
+
+
+---
+<img width="1903" height="932" alt="image" src="https://github.com/user-attachments/assets/b7c6171b-4c7a-4493-8e3b-df8ffb2c783a" />
+
 ![WhatsApp Image 2025-10-15 at 23 21 09_178440f7](https://github.com/user-attachments/assets/eab6eee7-b9d1-4590-868b-b7a2f58a2e95)
 
 
