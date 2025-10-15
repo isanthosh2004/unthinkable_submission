@@ -1,30 +1,36 @@
 # Code Review Assistant - Python Dependencies
 
-# Core Framework
+# --- Core Framework ---
 streamlit>=1.28.0
 
-# HTTP Requests
+# --- HTTP Requests ---
 requests>=2.31.0
 
-# PDF Generation
+# --- PDF Generation ---
 reportlab>=4.0.0
 
-# Markdown Processing
+# --- Markdown Parsing ---
 markdown>=3.5.0
 
-# Environment Variables
+# --- Environment Management ---
 python-dotenv>=1.0.0
 
-# Database
+# --- Visualization ---
+matplotlib>=3.9.0
+
+# --- Database ---
 # sqlite3 is built-in with Python
 
-# File Processing
+# --- File Utilities ---
 python-magic>=0.4.27
 
-# Additional Utilities
-# uuid, datetime, json, os, pathlib, typing, traceback, re, time are built-in with Python
+# --- AI/LLM Client ---
+openai>=1.0.0
 
-# Development Dependencies (optional)
+# --- Optional Auth (if used later) ---
+# streamlit-authenticator>=0.3.3
+
+# --- Development Tools (Optional) ---
 pytest>=7.4.0
 black>=23.0.0
 flake8>=6.0.0
