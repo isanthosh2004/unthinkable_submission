@@ -19,7 +19,7 @@ class CodeReviewLLM:
         from dotenv import load_dotenv
         load_dotenv(override=True)
         self.api_key = os.getenv('OPENROUTER_API_KEY')
-        self.base_url = "https://openrouter.ai/api/v1"
+        self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         self.model = "qwen/qwen-2.5-coder-32b-instruct:free"
         
         if not self.api_key:
