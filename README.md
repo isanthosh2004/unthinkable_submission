@@ -1,15 +1,16 @@
+
+
 # 🔍 Code Review Assistant
 
-A comprehensive web application for AI-powered code review with PDF report generation. Upload your code files, get detailed reviews from an LLM, and download professional PDF reports.
+An AI-powered **Code Review Web Application** that analyzes uploaded source code using **Large Language Models (LLMs)** via the **OpenRouter API**, generates detailed feedback, and provides downloadable PDF reports.  
+The system also supports multi-user authentication, report history tracking, and an admin dashboard.
 
-## ✨ Features
+🌐 **Live App:** [https://unthinkable-santhosh22bce3084.streamlit.app/](https://unthinkable-santhosh22bce3084.streamlit.app/)  
+📦 **Repository:** [https://github.com/isanthosh2004/unthinkable_submission](https://github.com/isanthosh2004/unthinkable_submission)
 
-- **Multi-file Upload**: Support for Python, JavaScript, TypeScript, C++, Java, Go, Rust, PHP, Ruby, Swift, Kotlin
-- **AI-Powered Reviews**: Uses OpenRouter API with Qwen 2.5 Coder model for comprehensive code analysis
-- **PDF Report Generation**: Professional PDF reports with structured analysis
-- **Database Storage**: SQLite database for storing report metadata and history
-- **Dashboard Interface**: Clean Streamlit UI with upload and history management
-- **Search & Filter**: Search through past reports by filename or date
+---
+![WhatsApp Image 2025-10-15 at 23 21 09_178440f7](https://github.com/user-attachments/assets/eab6eee7-b9d1-4590-868b-b7a2f58a2e95)
+
 
 ## 🏗 Architecture
 
