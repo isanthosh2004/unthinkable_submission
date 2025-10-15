@@ -7,6 +7,7 @@ The system also supports multi-user authentication, report history tracking, and
 
 🌐 **Live App:** [https://unthinkable-santhosh22bce3084.streamlit.app/](https://unthinkable-santhosh22bce3084.streamlit.app/)  
 📦 **Repository:** [https://github.com/isanthosh2004/unthinkable_submission](https://github.com/isanthosh2004/unthinkable_submission)
+**DEMO VIDEO** https://drive.google.com/file/d/16rE-IeC6FqorXCXd6Yesl_tUlO-rmYbj/view?usp=sharing
 
 ---
 ![WhatsApp Image 2025-10-15 at 23 21 09_178440f7](https://github.com/user-attachments/assets/eab6eee7-b9d1-4590-868b-b7a2f58a2e95)
