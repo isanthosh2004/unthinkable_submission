@@ -5,7 +5,7 @@ Handles generation of PDF reports from markdown content
 
 import os
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import re
 from io import BytesIO
 import matplotlib.pyplot as plt
@@ -108,6 +108,18 @@ class PDFGenerator:
             )
         )
 
+        # Inline code style
+        self.styles.add(
+            ParagraphStyle(
+                name="CodeInline",
+                parent=self.styles["Normal"],
+                fontName="Courier",
+                fontSize=9,
+                backColor=colors.whitesmoke,
+                textColor=colors.black,
+            )
+        )
+
         # Metadata style
         self.styles.add(
             ParagraphStyle(
@@ -123,23 +135,33 @@ class PDFGenerator:
     # ✨ Markdown Cleaner
     # -------------------------------------------------------------------------
     def _clean_markdown_bold(self, text: str) -> str:
-        """Convert markdown-style **bold** and *italic* text to HTML tags for PDF rendering."""
-        text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)  # Bold
-        text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", text)  # Italic
+        """
+        Convert markdown **bold**, *italic*, and `inline code` to
+        ReportLab-compatible HTML formatting.
+        """
+        # Handle **bold**
+        text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text)
+
+        # Handle *italic* (avoiding bold overlap)
+        text = re.sub(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", r"<i>\1</i>", text)
+
+        # Handle inline code using backticks
+        text = re.sub(
+            r"`([^`]+)`",
+            r"<font name='Courier' backColor='#f2f2f2' color='black'>\1</font>",
+            text,
+        )
+
+        # Clean bullet characters
+        text = text.replace("•", "• ")
+
         return text
 
     # -------------------------------------------------------------------------
     # 📈 Complexity Graph Generation
     # -------------------------------------------------------------------------
     def generate_complexity_graph(self, file_name: str) -> BytesIO:
-        """
-        Generate a complexity graph (Time vs Space Complexity)
-        Args:
-            file_name: The name of the code file
-        Returns:
-            BytesIO buffer containing the image
-        """
-        complexities = ["O(1)", "O(log n)", "O(n)", "O(n log n)", "O(n²)"]
+        """Generate a complexity graph (Time vs Space Complexity)"""
         n_values = [1, 2, 3, 4, 5]
         time_values = [t ** 2 for t in n_values]
         space_values = [t for t in n_values]
@@ -187,15 +209,15 @@ class PDFGenerator:
             story.append(Paragraph("Code Review Report", self.styles["CustomTitle"]))
             story.append(Spacer(1, 20))
 
-            # Metadata section
+            # Metadata
             story.extend(self._add_metadata_section(metadata, file_contents))
             story.append(Spacer(1, 20))
 
-            # File contents section
+            # File contents
             story.extend(self._add_file_contents_section(file_contents))
             story.append(PageBreak())
 
-            # Clean review content (remove markdown **)
+            # Clean markdown text before parsing
             review_content = self._clean_markdown_bold(review_content)
             story.extend(self._parse_markdown_content(review_content))
 
@@ -283,7 +305,6 @@ class PDFGenerator:
         html = markdown.markdown(
             markdown_content, extensions=["codehilite", "fenced_code", "tables"]
         )
-
         sections = self._split_by_headers(markdown_content)
         for section in sections:
             if section.strip():
@@ -313,14 +334,18 @@ class PDFGenerator:
 
             if not line:
                 if current_paragraph:
-                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
+                    story.append(
+                        Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"])
+                    )
                     current_paragraph = []
                 story.append(Spacer(1, 6))
                 continue
 
             if line.startswith("##"):
                 if current_paragraph:
-                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
+                    story.append(
+                        Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"])
+                    )
                     current_paragraph = []
                 header_text = line.replace("#", "").strip()
                 story.append(Paragraph(header_text, self.styles["CustomHeading1"]))
@@ -328,7 +353,9 @@ class PDFGenerator:
 
             elif line.startswith("###"):
                 if current_paragraph:
-                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
+                    story.append(
+                        Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"])
+                    )
                     current_paragraph = []
                 header_text = line.replace("#", "").strip()
                 story.append(Paragraph(header_text, self.styles["CustomHeading2"]))
@@ -336,16 +363,22 @@ class PDFGenerator:
 
             elif line.startswith("- ") or line.startswith("* "):
                 if current_paragraph:
-                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
+                    story.append(
+                        Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"])
+                    )
                     current_paragraph = []
                 bullet_text = line[2:].strip()
-                story.append(Paragraph(f"• {self._clean_markdown_bold(bullet_text)}", self.styles["Normal"]))
+                story.append(
+                    Paragraph(f"• {self._clean_markdown_bold(bullet_text)}", self.styles["Normal"])
+                )
 
             else:
                 current_paragraph.append(line)
 
         if current_paragraph:
-            story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
+            story.append(
+                Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"])
+            )
         return story
 
     # -------------------------------------------------------------------------
