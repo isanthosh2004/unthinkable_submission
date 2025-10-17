@@ -26,9 +26,16 @@ The system also supports multi-user authentication, report history tracking, and
 
 
 ---
+## Sample Deployed version
+
 <img width="1903" height="932" alt="image" src="https://github.com/user-attachments/assets/b7c6171b-4c7a-4493-8e3b-df8ffb2c783a" />
 
+--- 
+## DFD 
+
 ![WhatsApp Image 2025-10-15 at 23 21 09_178440f7](https://github.com/user-attachments/assets/eab6eee7-b9d1-4590-868b-b7a2f58a2e95)
+
+---
 
 
 ## 🏗 Architecture
