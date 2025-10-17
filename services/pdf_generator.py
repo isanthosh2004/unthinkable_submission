@@ -120,6 +120,15 @@ class PDFGenerator:
         )
 
     # -------------------------------------------------------------------------
+    # ✨ Markdown Cleaner
+    # -------------------------------------------------------------------------
+    def _clean_markdown_bold(self, text: str) -> str:
+        """Convert markdown-style **bold** and *italic* text to HTML tags for PDF rendering."""
+        text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)  # Bold
+        text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", text)  # Italic
+        return text
+
+    # -------------------------------------------------------------------------
     # 📈 Complexity Graph Generation
     # -------------------------------------------------------------------------
     def generate_complexity_graph(self, file_name: str) -> BytesIO:
@@ -132,8 +141,8 @@ class PDFGenerator:
         """
         complexities = ["O(1)", "O(log n)", "O(n)", "O(n log n)", "O(n²)"]
         n_values = [1, 2, 3, 4, 5]
-        time_values = [t ** 2 for t in n_values]  # Example time complexity
-        space_values = [t for t in n_values]  # Example space complexity
+        time_values = [t ** 2 for t in n_values]
+        space_values = [t for t in n_values]
 
         plt.figure(figsize=(4, 3))
         plt.plot(n_values, time_values, label="Time Complexity (O(n²))", marker="o")
@@ -144,7 +153,6 @@ class PDFGenerator:
         plt.title(f"Complexity Graph: {file_name}")
         plt.grid(True)
 
-        # Save plot to a BytesIO buffer
         img_buf = BytesIO()
         plt.tight_layout()
         plt.savefig(img_buf, format="png")
@@ -158,24 +166,12 @@ class PDFGenerator:
     def generate_report(
         self, file_contents: List[Dict[str, Any]], review_content: str, metadata: Dict[str, Any]
     ) -> str:
-        """
-        Generate a PDF report from code review content
-
-        Args:
-            file_contents: List of file dictionaries with content
-            review_content: Markdown formatted review content
-            metadata: Additional metadata about the review
-
-        Returns:
-            Path to the generated PDF file
-        """
+        """Generate a PDF report from code review content"""
         try:
-            # Generate filename
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"code_review_report_{timestamp}.pdf"
             filepath = os.path.join(self.reports_dir, filename)
 
-            # Create PDF document
             doc = SimpleDocTemplate(
                 filepath,
                 pagesize=A4,
@@ -185,25 +181,24 @@ class PDFGenerator:
                 bottomMargin=18,
             )
 
-            # Build story (content)
             story = []
 
-            # Add title
+            # Title
             story.append(Paragraph("Code Review Report", self.styles["CustomTitle"]))
             story.append(Spacer(1, 20))
 
-            # Add metadata
+            # Metadata section
             story.extend(self._add_metadata_section(metadata, file_contents))
             story.append(Spacer(1, 20))
 
-            # Add file contents section
+            # File contents section
             story.extend(self._add_file_contents_section(file_contents))
             story.append(PageBreak())
 
-            # Add review content
+            # Clean review content (remove markdown **)
+            review_content = self._clean_markdown_bold(review_content)
             story.extend(self._parse_markdown_content(review_content))
 
-            # Build PDF
             doc.build(story)
             return filepath
 
@@ -216,10 +211,7 @@ class PDFGenerator:
     def _add_metadata_section(
         self, metadata: Dict[str, Any], file_contents: List[Dict[str, Any]]
     ) -> List:
-        """Add metadata section to PDF"""
         story = []
-
-        # Create metadata table
         metadata_data = [
             ["Generated", datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
             ["Files Reviewed", str(len(file_contents))],
@@ -246,34 +238,25 @@ class PDFGenerator:
         story.append(Paragraph("Report Information", self.styles["CustomHeading1"]))
         story.append(metadata_table)
         story.append(Spacer(1, 12))
-
         return story
 
     # -------------------------------------------------------------------------
     # 📜 File Contents Section with Complexity Graph
     # -------------------------------------------------------------------------
     def _add_file_contents_section(self, file_contents: List[Dict[str, Any]]) -> List:
-        """Add file contents section to PDF"""
         story = []
         story.append(Paragraph("Code Files Reviewed", self.styles["CustomHeading1"]))
 
         for i, file_info in enumerate(file_contents, 1):
-            # File header
-            story.append(
-                Paragraph(f"File {i}: {file_info['name']}", self.styles["CustomHeading2"])
-            )
-
-            # File metadata
+            story.append(Paragraph(f"File {i}: {file_info['name']}", self.styles["CustomHeading2"]))
             metadata_text = f"Size: {file_info['size']:,} bytes | Type: {file_info['type']}"
             story.append(Paragraph(metadata_text, self.styles["MetadataStyle"]))
             story.append(Spacer(1, 6))
 
-            # File content (truncated if too long)
             content = file_info["content"]
             if len(content) > 2000:
                 content = content[:2000] + "\n\n... [Content truncated for PDF display] ..."
 
-            # Add code lines
             lines = content.split("\n")
             for line in lines[:50]:
                 if line.strip():
@@ -282,18 +265,10 @@ class PDFGenerator:
                     story.append(Spacer(1, 6))
 
             if len(lines) > 50:
-                story.append(
-                    Paragraph("... [Additional lines truncated] ...", self.styles["CodeStyle"])
-                )
-
+                story.append(Paragraph("... [Additional lines truncated] ...", self.styles["CodeStyle"]))
             story.append(Spacer(1, 12))
 
-            # Add complexity graph for this file
-            story.append(
-                Paragraph(
-                    f"Complexity Graph for {file_info['name']}", self.styles["CustomHeading2"]
-                )
-            )
+            story.append(Paragraph(f"Complexity Graph for {file_info['name']}", self.styles["CustomHeading2"]))
             graph_img = self.generate_complexity_graph(file_info["name"])
             story.append(Image(graph_img, width=400, height=300))
             story.append(Spacer(1, 20))
@@ -304,25 +279,19 @@ class PDFGenerator:
     # 🧩 Markdown Parsing Section
     # -------------------------------------------------------------------------
     def _parse_markdown_content(self, markdown_content: str) -> List:
-        """Parse markdown content and convert to PDF elements"""
         story = []
-
         html = markdown.markdown(
             markdown_content, extensions=["codehilite", "fenced_code", "tables"]
         )
 
         sections = self._split_by_headers(markdown_content)
-
         for section in sections:
             if section.strip():
                 story.extend(self._process_section(section))
-
         return story
 
     def _split_by_headers(self, content: str) -> List[str]:
-        """Split markdown content by headers"""
         sections = re.split(r"\n(#{2,3})\s+", content)
-
         result = []
         for i in range(0, len(sections), 2):
             if i + 1 < len(sections):
@@ -332,14 +301,11 @@ class PDFGenerator:
                     result.append(f"{header}\n{content_part}")
             elif sections[i].strip():
                 result.append(sections[i].strip())
-
         return result
 
     def _process_section(self, section: str) -> List:
-        """Process a markdown section and convert to PDF elements"""
         story = []
         lines = section.split("\n")
-
         current_paragraph = []
 
         for line in lines:
@@ -347,64 +313,46 @@ class PDFGenerator:
 
             if not line:
                 if current_paragraph:
-                    story.append(Paragraph(" ".join(current_paragraph), self.styles["Normal"]))
+                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
                     current_paragraph = []
                 story.append(Spacer(1, 6))
                 continue
 
             if line.startswith("##"):
                 if current_paragraph:
-                    story.append(Paragraph(" ".join(current_paragraph), self.styles["Normal"]))
+                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
                     current_paragraph = []
-
                 header_text = line.replace("#", "").strip()
                 story.append(Paragraph(header_text, self.styles["CustomHeading1"]))
                 story.append(Spacer(1, 6))
 
             elif line.startswith("###"):
                 if current_paragraph:
-                    story.append(Paragraph(" ".join(current_paragraph), self.styles["Normal"]))
+                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
                     current_paragraph = []
-
                 header_text = line.replace("#", "").strip()
                 story.append(Paragraph(header_text, self.styles["CustomHeading2"]))
                 story.append(Spacer(1, 4))
 
-            elif line.startswith("```"):
-                if current_paragraph:
-                    story.append(Paragraph(" ".join(current_paragraph), self.styles["Normal"]))
-                    current_paragraph = []
-                continue
-
             elif line.startswith("- ") or line.startswith("* "):
                 if current_paragraph:
-                    story.append(Paragraph(" ".join(current_paragraph), self.styles["Normal"]))
+                    story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
                     current_paragraph = []
-
                 bullet_text = line[2:].strip()
-                story.append(Paragraph(f"• {bullet_text}", self.styles["Normal"]))
+                story.append(Paragraph(f"• {self._clean_markdown_bold(bullet_text)}", self.styles["Normal"]))
 
             else:
                 current_paragraph.append(line)
 
         if current_paragraph:
-            story.append(Paragraph(" ".join(current_paragraph), self.styles["Normal"]))
-
+            story.append(Paragraph(self._clean_markdown_bold(" ".join(current_paragraph)), self.styles["Normal"]))
         return story
 
     # -------------------------------------------------------------------------
     # 📁 PDF Report Info
     # -------------------------------------------------------------------------
     def get_report_info(self, filepath: str) -> Dict[str, Any]:
-        """
-        Get information about a generated report
-
-        Args:
-            filepath: Path to the PDF file
-
-        Returns:
-            Dictionary with report information
-        """
+        """Get information about a generated report"""
         try:
             if not os.path.exists(filepath):
                 return {"exists": False}
@@ -418,4 +366,3 @@ class PDFGenerator:
             }
         except Exception as e:
             return {"exists": False, "error": str(e)}
-
