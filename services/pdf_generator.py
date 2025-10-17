@@ -9,6 +9,7 @@ from typing import List, Dict, Any
 import re
 from io import BytesIO
 import matplotlib.pyplot as plt
+from zoneinfo import ZoneInfo 
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -235,7 +236,7 @@ class PDFGenerator:
     ) -> List:
         story = []
         metadata_data = [
-            ["Generated", datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
+            ["Generated", datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")],
             ["Files Reviewed", str(len(file_contents))],
             ["Model Used", metadata.get("model_used", "N/A")],
             ["Total Tokens", str(metadata.get("total_tokens", "N/A"))],
@@ -394,8 +395,8 @@ class PDFGenerator:
             return {
                 "exists": True,
                 "size": stat.st_size,
-                "created": datetime.fromtimestamp(stat.st_ctime).isoformat(),
-                "modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                "created": datetime.fromtimestamp(stat.st_ctime , ZoneInfo("Asia/Kolkata")).isoformat(),
+                "modified": datetime.fromtimestamp(stat.st_mtime, ZoneInfo("Asia/Kolkata")).isoformat(),
             }
         except Exception as e:
             return {"exists": False, "error": str(e)}
