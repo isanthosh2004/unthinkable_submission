@@ -1,6 +1,6 @@
 
 
-# # 🔍 Code Review Assistant
+# # 🔍 Code Review Assistant - Stable Release
 
 An AI-powered **Code Review Web Application** that analyzes uploaded source code using **Large Language Models (LLMs)** via the **OpenRouter API**, generates detailed feedback, and provides downloadable PDF reports.  
 The system also supports multi-user authentication, report history tracking, and an admin dashboard.
