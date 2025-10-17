@@ -7,6 +7,14 @@ The system also supports multi-user authentication, report history tracking, and
 
 ---
 
+## Student Details 
+
+ - Name : Santhosh Kumar S P
+ - RegNo: 22BCE3084
+ - CAMPUS : VIT VELLORE
+   
+---
+
 🌐 **Live App:** [https://unthinkable-santhosh22bce3084.streamlit.app/](https://unthinkable-santhosh22bce3084.streamlit.app/)  
 📦 **Repository:** [https://github.com/isanthosh2004/unthinkable_submission](https://github.com/isanthosh2004/unthinkable_submission)  
 🎥 **Demo Video:** [Watch on Google Drive](https://drive.google.com/file/d/16rE-IeC6FqorXCXd6Yesl_tUlO-rmYbj/view?usp=sharing)
@@ -224,42 +232,18 @@ LOG_LEVEL=DEBUG
 3. Add environment variables in the dashboard
 4. Deploy
 
-### Docker Deployment
-```dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 8501
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
-```
+
 
 ### Environment Variables for Production
 - Set `OPENROUTER_API_KEY` in your deployment environment
 - Configure `DATABASE_PATH` for persistent storage
 - Set `REPORTS_DIRECTORY` for cloud storage integration
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
 
-## 📄 License
 
-This project is open source. Please check the license file for details.
 
-## 🆘 Support
 
-For issues and questions:
-1. Check the troubleshooting section
-2. Review the logs for error messages
-3. Open an issue with detailed error information
-
----
 
 **Happy Code Reviewing! 🔍✨**
 
